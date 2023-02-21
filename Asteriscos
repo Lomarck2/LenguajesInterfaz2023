@@ -1,0 +1,47 @@
+.MODEL SMALL
+.STACK
+.DATA
+    AUX DW 0
+.CODE
+PROGRAMA: ;Etiqueta de inicio del programa
+    MOV AX,@data ;Para ubicar el segmento de datos y que
+    MOV DS,AX    ;las variables se puedan acceder
+    XOR AX,AX
+    XOR BX,BX
+    XOR CX,CX
+    XOR DX,DX    
+    MOV CX,6      
+    ciclo1:
+        PUSH CX
+        MOV AUX,CX       
+        XOR BX,BX
+        MOV BX,CX        
+        XOR CX,CX
+        MOV CX,6        
+        SUB CX,BX
+        XOR BX,BX        
+        espacios:
+            INC BX
+            MOV DL,20h
+            MOV AH,02h
+            INT 21h
+            CMP BX,CX
+            JLE espacios
+        POP CX
+        ciclo2:
+            MOV DL,2Ah
+            MOV AH,02h
+            INT 21h
+        LOOP ciclo2           
+        ;POP CX
+        MOV CX,AUX
+        MOV DL,0Dh ;Retorno de carro
+        INT 21h
+        MOV DL,0Ah ;Linea nueva
+        INT 21h     
+    LOOP ciclo1
+    ;##########################################################################
+    ;Rutina de Cierre de Programa, devuelve el control a DOS
+    MOV AH,4Ch
+    INT 21h
+END
