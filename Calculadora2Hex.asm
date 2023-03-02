@@ -58,6 +58,9 @@ PROGRAMA: ;Etiqueta de inicio del programa
     MOV num2,AL
     ;-------------------------------------------------------
     
+    ;MOV BX,0ABCDh
+;    CALL imprimirRegistro
+    
     ;##########################################################################
     ;Rutina de Cierre de Programa, devuelve el control a DOS
     MOV AH,4Ch
@@ -72,21 +75,57 @@ PROGRAMA: ;Etiqueta de inicio del programa
             JMP retorno1
         resta37:
             SUB AL,37h
-        retorno1:                                          
+        retorno1:                                         
         
             RET    
     ENDP 
     
     PROC imprimirRegistro ;Imprime los 4 digitos hexadecimales de registro BX
        PUSH BX
-       SHR BX,12         ;Se coloca el digito mas a la izquierda en BL para poder imprimirlo
+       SHR BX,12 ;Se coloca el digito mas a la izquierda en BL para poder imprimirlo
        MOV AL,BL
-       CALL ascii2hex
+       CALL hex2ascii
        printC AL
        
-       POP BX
+       POP BX   ;Se coloca el segundo digito mas a la izquierda en BL para poder imprimirlo
        PUSH BX
+       SHL BX,4
+       SHR BX,12
+       MOV AL,BL
+       CALL hex2ascii
+       printC AL
        
+       POP BX   ;Se coloca el tercer digito mas a la izquierda en BL para poder imprimirlo
+       PUSH BX
+       SHL BX,8
+       SHR BX,12
+       MOV AL,BL
+       CALL hex2ascii
+       printC AL
+       
+       POP BX   ;Se coloca el cuarto digito mas a la izquierda en BL para poder imprimirlo
+       PUSH BX
+       SHL BX,12
+       SHR BX,12
+       MOV AL,BL
+       CALL hex2ascii
+       printC AL
+       
+       RET 
+    ENDP
+    
+    PROC hex2ascii ;Convierte un valor ascii a hexadecimal, el valor debe estar en AL
+        CMP AL,9h
+        JLE suma30
+        JNLE suma37
+        suma30:
+            ADD AL,30h
+            JMP retorno1
+        suma37:
+            ADD AL,37h
+        retorno2:                                          
         
+            RET    
     ENDP
 END
+
